@@ -21,7 +21,9 @@ def decodeKromosom(byte):
     for i in range(n):
         kromosom += byte[i] * (2 ** (n - i - 1))
     
-    return kromosom
+    max_value = (2**n) - 1
+    x_real = r_min + (kromosom / max_value) * (r_max - r_min)
+    return int(x_real)
 
 # menghitung fungsi objektif 
 def fungsiObjektif(x1, x2):

@@ -19,7 +19,13 @@ def decodeKromosom(byte):
         g += byte[i] * (2 ** (-(i + 1)))
         penyebut += 2 ** (-(i + 1))
     
+<<<<<<< HEAD
     return r_min + ((r_max - r_min) / penyebut) * g
+=======
+    max_value = (2**n) - 1
+    x_real = r_min + (kromosom / max_value) * (r_max - r_min)
+    return int(x_real) 
+>>>>>>> f6d0584660aea75fef9a6124036d5588d6c7d147
 
 # menghitung fungsi objektif 
 def fungsiObjektif(x1, x2):
@@ -39,6 +45,10 @@ def fungsiNormalisasi(fitness):
     total = sum(fitness)
     return [f / total for f in fitness]
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> f6d0584660aea75fef9a6124036d5588d6c7d147
 # fungsi untuk membuat parent 
 def RouletteWheelSelection(fitness):
     r = random.uniform(0, 1)
@@ -49,6 +59,7 @@ def RouletteWheelSelection(fitness):
             return i
     return len(fitness) - 1 
 
+<<<<<<< HEAD
 def tournament_selection(populasi, fitness, tournament_size):
     best_index = None
     best_fitness = None
@@ -61,6 +72,9 @@ def tournament_selection(populasi, fitness, tournament_size):
 
     return best_index
 
+=======
+
+>>>>>>> f6d0584660aea75fef9a6124036d5588d6c7d147
 # fungsi untuk menghasilkan kromosom baru dengan cara crossover
 def crossover(parent):
     pc = 0.7
@@ -128,7 +142,11 @@ for generasi in range(10000):
     fits = []
 
     header("Data Awal")
+<<<<<<< HEAD
     for i in range(20):
+=======
+    for i in range(5):
+>>>>>>> f6d0584660aea75fef9a6124036d5588d6c7d147
         # membuat kromosom dengan populasi 40 individu
         panjang_kromosom = 10
         # membuat kromosom random dengan panjang 10 bit
@@ -151,8 +169,11 @@ for generasi in range(10000):
         nilai_fitnes = fungsiFitnes(nilai_obj)
         obj.append(nilai_obj)
         fits.append(nilai_fitnes)
+<<<<<<< HEAD
         print(fits)
         print("Tipe fitness:", type(nilai_fitnes))
+=======
+>>>>>>> f6d0584660aea75fef9a6124036d5588d6c7d147
 
     normalisasi = fungsiNormalisasi(fits)
     cumulative = 0.0
@@ -184,6 +205,7 @@ for generasi in range(10000):
     normalisasi_fitnes = fungsiNormalisasi(fits)
 
     # pemanggilan untuk parent baru dalam bentuk index
+<<<<<<< HEAD
     parent1_idx = tournament_selection(semua_kromosom, fits, 4)
     parent2_idx = tournament_selection(semua_kromosom, fits, 4)
     while parent1_idx == parent2_idx:
@@ -280,3 +302,92 @@ print(f"Generasi ke-{generasi_terbaik}")
 print(f"kromosom terbaik: {kromosom_terbaik}")
 print(f"x1 = {round(nilai_X1_terbaik, 1)}, x2 = {round(nilai_X2_terbaik, 1)}")
 print(f"Nilai objektif: {round(nilai_objektif_terbaik, 1)}")
+=======
+    parent1 = RouletteWheelSelection(normalisasi_fitnes)
+    parent2 = RouletteWheelSelection(normalisasi_fitnes)
+
+    # perulangan jika terjadi parent 1 dan 2 itu sama 
+    while parent1 == parent2:
+        parent1 = RouletteWheelSelection(normalisasi_fitnes)
+        parent2 = RouletteWheelSelection(normalisasi_fitnes)
+
+    # mengubah parent dari index menjadi kromosom biner
+    kromosom_parent1 = semua_kromosom[parent1]
+    kromosom_parent2 = semua_kromosom[parent2]
+    parent.append((kromosom_parent1, kromosom_parent2))
+
+    print(f"parent 1:{kromosom_parent1} dan parent 2: {kromosom_parent2}")
+
+    header("Crossover")
+
+    anak = crossover(parent)
+
+    header("Mutasi")
+    m = mutasi(anak)
+
+    header("Pergantian Generasi")
+    seluruh_populasi = []
+
+    for child1, child2 in m:
+            seluruh_populasi.append(child1)
+            seluruh_populasi.append(child2)
+            
+    # Update nilai fitness populasi baru
+    a = []
+    b = []
+    obj = []
+    fits = []
+            
+    for individu in seluruh_populasi:
+        individu_len = len(individu) // 2
+        kromosom_x1 = individu[:individu_len]
+        kromosom_x2 = individu[individu_len:]
+                
+        x1 = decodeKromosom(kromosom_x1)
+        x2 = decodeKromosom(kromosom_x2)
+        a.append(x1)
+        b.append(x2)
+                
+        nilai_obj = fungsiObjektif(x1, x2)
+        nilai_fitnes = fungsiFitnes(nilai_obj)
+        obj.append(nilai_obj)
+        fits.append(nilai_fitnes)
+
+    fitness_normalisasi = fungsiNormalisasi(fits)
+
+    # Temukan kromosom terbaik dari populasi akhir
+    best_idx = fitness_normalisasi.index(max(fitness_normalisasi))
+    best_kromosom = seluruh_populasi[best_idx]
+    best_fitness = fitness_normalisasi[best_idx]
+        
+    # Decode nilai x1 dan x2 dari kromosom terbaik
+    individu_len = len(best_kromosom) // 2
+    x1 = decodeKromosom(best_kromosom[:individu_len])
+    x2 = decodeKromosom(best_kromosom[individu_len:])
+    nilai_objektif = fungsiObjektif(x1, x2)
+
+    i = 1
+    for individu in seluruh_populasi:
+        print(f"Kromosom ke-{i}: {individu}")
+        i+=1
+
+    if nilai_objektif_terbaik < nilai_objektif:
+        kromosom_terbaik = best_kromosom
+        nilai_objektif_terbaik = nilai_objektif
+        nilai_X1_terbaik = x1
+        nilai_X2_terbaik = x2
+        generasi_terbaik = generasi + 1
+        
+    print(f"\nIndex kromosom terbaik dari generasi ke-{generasi+1}: {best_idx + 1}")
+    print(f"Kromosom terbaik dari generasi ke-{generasi+1}: {best_kromosom}")
+    print(f"x1 = {x1}, x2 = {x2}")
+    print(f"Nilai objektif: {nilai_objektif:.6f}")
+    print(f"Fitness: {best_fitness:.6f}")
+
+header("Hasil Akhir")
+print(f"Generasi ke-{generasi_terbaik}")
+print(f"kromosom terbaik: {kromosom_terbaik}")
+print(f"x1 = {nilai_X1_terbaik}, x2 = {nilai_X2_terbaik}")
+print(f"Nilai objektif: {nilai_objektif_terbaik:.6f}")
+
+>>>>>>> f6d0584660aea75fef9a6124036d5588d6c7d147

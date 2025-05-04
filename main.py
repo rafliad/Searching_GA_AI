@@ -1,6 +1,5 @@
 import random
 import math
-import copy
 
 def header(judul):
     print(f"\n======================================== {judul} ========================================")
@@ -26,32 +25,18 @@ def fungsiObjektif(x1, x2):
     try: 
         nilai = math.sin(x1) * math.cos(x2) * math.tanh(x1 + x2)
         nilai2 = (3/4) * math.exp(1 - math.sqrt(x1**2))
-        return -(nilai + nilai2)
+        return (-(nilai + nilai2))
     except:
         return float('inf')
 
 # menghitung fungsi fitnes
 def fungsiFitnes(objektif):
-    return 1 / (abs(objektif) + 0.01)
-
-# menghitung nilai normalisasi dari fungsi fitnes
-def fungsiNormalisasi(fitness):
-    total = sum(fitness)
-    return [f / total for f in fitness]
+    return 1 / ((objektif) + 0.1)
 
 # fungsi untuk membuat parent 
-def RouletteWheelSelection(fitness):
-    r = random.uniform(0, 1)
-    cumulative = 0.0
-    for i, f in enumerate(fitness):
-        cumulative += f
-        if r <= cumulative:
-            return i
-    return len(fitness) - 1 
-
 def tournament_selection(populasi, fitness, tournament_size):
     best_index = None
-    best_fitness = None
+    best_fitness = float('-inf')
 
     for _ in range(tournament_size):
         idx = random.randint(0, len(populasi) - 1)
@@ -76,6 +61,19 @@ def crossover(parent):
             child1 = parent1
             child2 = parent2
         print(f"child 1:{child1} dan child 2: {child2}")
+        child.append((child1, child2))
+    return child
+
+def uniform_crossover(parent1, parent2):
+    """Melakukan uniform crossover antara dua parent biner."""
+    child = []
+    for i in range(len(parent1)):
+        if random.random() < 0.6:
+            child1 = parent1[i]
+            child2 = parent2[i]
+        else:
+            child1 = parent2[i]
+            child2 = parent1[i]
         child.append((child1, child2))
     return child
     
@@ -121,7 +119,7 @@ for generasi in range(10000):
     # range nilai 
     r_min = -10
     r_max = 10 
-    semua_kromosom = []
+    populasi = []
     a = []
     b = []
     obj = []
@@ -130,15 +128,15 @@ for generasi in range(10000):
     header("Data Awal")
     for i in range(20):
         # membuat kromosom dengan populasi 40 individu
-        panjang_kromosom = 10
+        bit = 10
         # membuat kromosom random dengan panjang 10 bit
-        hasil_kromosom = buatKromosom(panjang_kromosom)
-        semua_kromosom.append(hasil_kromosom)
+        kromosom = buatKromosom(bit)
+        populasi.append(kromosom)
 
         # membagi kromosom menjadi x1 dan x2
-        individu = len(hasil_kromosom) // 2  
-        kromosom_x1 = hasil_kromosom[:individu]  
-        kromosom_x2 = hasil_kromosom[individu:] 
+        individu = len(kromosom) // 2  
+        kromosom_x1 = kromosom[:individu]  
+        kromosom_x2 = kromosom[individu:] 
 
         # mengubah setiap individu menjadi nilai real
         x1 = decodeKromosom(kromosom_x1)
@@ -148,50 +146,27 @@ for generasi in range(10000):
 
         # menghitung fungsi objektif dan fitness
         nilai_obj = fungsiObjektif(x1, x2)
-        nilai_fitnes = fungsiFitnes(nilai_obj)
         obj.append(nilai_obj)
+
+        nilai_fitnes = fungsiFitnes(nilai_obj)
         fits.append(nilai_fitnes)
-        print(fits)
-        print("Tipe fitness:", type(nilai_fitnes))
-
-    normalisasi = fungsiNormalisasi(fits)
-    cumulative = 0.0
-    cumfit = []
-
-    # membuat nilai cumulative sesuai dengan nilai fitnes yang sudah di nomalisasikan
-    for c in normalisasi:
-        cumulative += c
-        cumfit.append(round(cumulative, 3))
-
-    interval = []
-    offset = 0.001
 
     # membuat interval dari nilai cumulative
-    for i, value in enumerate(cumfit):
-        if i == 0:
-            awal = 0.0
-        else:
-            awal = cumfit[i - 1] + offset
-
-        akhir = value
-        interval.append((awal, akhir))
-        print(f"no. kromosom: {i + 1} | a: {a[i]} | b: {b[i]} | kromosom: {semua_kromosom[i]} | Fungsi Objektif: {obj[i]} | Fungsi Fitnes: {fits[i]} | cumulative: {cumfit[i]} | interval: {interval[i]}")
+    for i in range(20):
+        print(f"no. kromosom: {i + 1} | a: {a[i]} | b: {b[i]} | kromosom: {populasi[i]} | Fungsi Objektif: {obj[i]} | Fungsi Fitnes: {fits[i]}")
 
     header("Pemilihan Orang Tua")
     parent = []
-    
-    # me looping selama populasinya masih dalam range populasi dibagi 2
-    normalisasi_fitnes = fungsiNormalisasi(fits)
 
     # pemanggilan untuk parent baru dalam bentuk index
-    parent1_idx = tournament_selection(semua_kromosom, fits, 4)
-    parent2_idx = tournament_selection(semua_kromosom, fits, 4)
+    parent1_idx = tournament_selection(populasi, fits, 3)
+    parent2_idx = tournament_selection(populasi, fits, 3)
     while parent1_idx == parent2_idx:
-        parent1_idx = tournament_selection(semua_kromosom, fits, 4)
-        parent2_idx = tournament_selection(semua_kromosom, fits, 4)
+        parent1_idx = tournament_selection(populasi, fits, 3)
+        parent2_idx = tournament_selection(populasi, fits, 3)
 
-    kromosom_parent1 = semua_kromosom[parent1_idx]
-    kromosom_parent2 = semua_kromosom[parent2_idx]
+    kromosom_parent1 = populasi[parent1_idx]
+    kromosom_parent2 = populasi[parent2_idx]
 
     parent.append((kromosom_parent1, kromosom_parent2))
          
@@ -243,8 +218,6 @@ for generasi in range(10000):
         nilai_fitnes = fungsiFitnes(nilai_obj)
         obj.append(nilai_obj)
         fits.append(nilai_fitnes)
-
-    fitness_normalisasi = fungsiNormalisasi(fits)
 
     # Temukan kromosom terbaik dari populasi akhir
     best_idx = fits.index(max(fits))

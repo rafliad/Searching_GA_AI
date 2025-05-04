@@ -18,12 +18,12 @@ def decodeKromosom(byte):
         g += byte[i] * (2 ** (-(i + 1)))
         penyebut += 2 ** (-(i + 1))
     
-    return r_min + ((r_max - r_min) / penyebut) * g
+    return r_min + (((r_max - r_min) / penyebut) * g)
 
 # menghitung fungsi objektif 
 def fungsiObjektif(x1, x2):
     try: 
-        nilai = math.sin(x1) * math.cos(x2) * math.tanh(x1 + x2)
+        nilai = math.sin(x1) * math.cos(x2) * math.tan(x1 + x2)
         nilai2 = (3/4) * math.exp(1 - math.sqrt(x1**2))
         return (-(nilai + nilai2))
     except:

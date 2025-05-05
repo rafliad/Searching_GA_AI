@@ -23,7 +23,7 @@ def decodeKromosom(byte):
 # menghitung fungsi objektif 
 def fungsiObjektif(x1, x2):
     try: 
-        nilai = math.sin(x1) * math.cos(x2) * math.tan(x1 + x2)
+        nilai = math.sin(x1) * math.cos(x2) * math.tanh(x1 + x2)
         nilai2 = (3/4) * math.exp(1 - math.sqrt(x1**2))
         return (-(nilai + nilai2))
     except:
@@ -111,14 +111,15 @@ def mutasi(anak):
 
 kromosom_terbaik = []
 nilai_objektif_terbaik = 0
+nilai_fitnes_terbaik = 0
 nilai_X1_terbaik = 0
 nilai_X2_terbaik = 0
 generasi_terbaik = -1  
 
-for generasi in range(10000):
+for generasi in range(100):
     # range nilai 
-    r_min = -10
-    r_max = 10 
+    r_min = -2
+    r_max = 3 
     populasi = []
     a = []
     b = []
@@ -128,7 +129,7 @@ for generasi in range(10000):
     header("Data Awal")
     for i in range(20):
         # membuat kromosom dengan populasi 40 individu
-        bit = 10
+        bit = 16
         # membuat kromosom random dengan panjang 10 bit
         kromosom = buatKromosom(bit)
         populasi.append(kromosom)
@@ -150,10 +151,6 @@ for generasi in range(10000):
 
         nilai_fitnes = fungsiFitnes(nilai_obj)
         fits.append(nilai_fitnes)
-
-    # membuat interval dari nilai cumulative
-    for i in range(20):
-        print(f"no. kromosom: {i + 1} | a: {a[i]} | b: {b[i]} | kromosom: {populasi[i]} | Fungsi Objektif: {obj[i]} | Fungsi Fitnes: {fits[i]}")
 
     header("Pemilihan Orang Tua")
     parent = []
@@ -229,6 +226,7 @@ for generasi in range(10000):
     x1 = decodeKromosom(best_kromosom[:individu_len])
     x2 = decodeKromosom(best_kromosom[individu_len:])
     nilai_objektif = fungsiObjektif(x1, x2)
+    nilai_fts = fungsiFitnes(nilai_objektif)
 
     i = 1
     for individu in seluruh_populasi:
@@ -238,6 +236,7 @@ for generasi in range(10000):
     if nilai_objektif_terbaik > nilai_objektif:
         kromosom_terbaik = best_kromosom
         nilai_objektif_terbaik = nilai_objektif
+        nilai_fitnes_terbaik = nilai_fts
         nilai_X1_terbaik = x1
         nilai_X2_terbaik = x2
         generasi_terbaik = generasi + 1
@@ -253,3 +252,4 @@ print(f"Generasi ke-{generasi_terbaik}")
 print(f"kromosom terbaik: {kromosom_terbaik}")
 print(f"x1 = {round(nilai_X1_terbaik, 1)}, x2 = {round(nilai_X2_terbaik, 1)}")
 print(f"Nilai objektif: {round(nilai_objektif_terbaik, 1)}")
+print(f"Nilai fitness: {round(nilai_fitnes_terbaik, 1)}")

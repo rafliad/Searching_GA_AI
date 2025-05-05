@@ -116,7 +116,7 @@ nilai_X1_terbaik = 0
 nilai_X2_terbaik = 0
 generasi_terbaik = -1  
 
-for generasi in range(100):
+for generasi in range(500):
     # range nilai 
     r_min = -2
     r_max = 3 
@@ -151,6 +151,7 @@ for generasi in range(100):
 
         nilai_fitnes = fungsiFitnes(nilai_obj)
         fits.append(nilai_fitnes)
+        print(f"kromosom ke-{i+1} memiliki kromosom {kromosom} nilai x1 = {round(x1, 4)} dan x2 = {round(x2, 4)} dengan nilai objektif {round(nilai_obj, 4)} dan fitness {round(nilai_fitnes, 4)}")
 
     header("Pemilihan Orang Tua")
     parent = []
@@ -243,13 +244,13 @@ for generasi in range(100):
         
     print(f"\nIndex kromosom terbaik dari generasi ke-{generasi+1}: {best_idx + 1}")
     print(f"Kromosom terbaik dari generasi ke-{generasi+1}: {best_kromosom}")
-    print(f"x1 = {x1}, x2 = {x2}")
-    print(f"Nilai objektif: {nilai_objektif:.6f}")
-    print(f"Fitness: {best_fitness:.6f}")
+    print(f"x1 = {round(x1, 4)}, x2 = {round(x2, 4)}")
+    print(f"Nilai objektif: {round(nilai_objektif, 4)}")
+    print(f"Fitness: {round(best_fitness, 4)}")
 
 header("Hasil Akhir")
 print(f"Generasi ke-{generasi_terbaik}")
 print(f"kromosom terbaik: {kromosom_terbaik}")
-print(f"x1 = {round(nilai_X1_terbaik, 1)}, x2 = {round(nilai_X2_terbaik, 1)}")
-print(f"Nilai objektif: {round(nilai_objektif_terbaik, 1)}")
-print(f"Nilai fitness: {round(nilai_fitnes_terbaik, 1)}")
+print(f"x1 = {round(nilai_X1_terbaik, 4)}, x2 = {round(nilai_X2_terbaik, 4)}")
+print(f"Nilai objektif: {round(nilai_objektif_terbaik, 4)}")
+print(f"Nilai fitness: {round(nilai_fitnes_terbaik, 4)}")

@@ -40,7 +40,7 @@ def tournament_selection(populasi, fitness, tournament_size):
 
     for _ in range(tournament_size):
         idx = random.randint(0, len(populasi) - 1)
-        if best_index is None or fitness[idx] > best_fitness:
+        if best_index is None or fitness[idx] >= best_fitness:
             best_index = idx
             best_fitness = fitness[idx]
 
@@ -52,7 +52,7 @@ def crossover(parent):
     child = []
     for (parent1, parent2) in parent:
         r = random.uniform(0, 1)
-        if r < pc:
+        if r <= pc:
             # merandom nilai titik potong
             tipot = random.randint(1, 9)
             child1 = parent1[:tipot] + parent2[tipot:]
@@ -77,32 +77,61 @@ def uniform_crossover(parent1, parent2):
         child.append((child1, child2))
     return child
     
+# def mutasi(anak):
+#     pm = 0.1  # probabilitas mutasi
+#     bits_to_mutate = round(pm * 32)  # jumlah bit yang akan dimutasi
+    
+#     # Iterasi untuk setiap pasangan anak
+#     for child1, child2 in anak:
+        
+#         # Konversi tuple ke list agar bisa dimodifikasi
+#         child1 = list(child1)
+#         child2 = list(child2)
+        
+#         # Gabungkan kedua kromosom untuk kemudahan memilih bit secara acak
+#         all_bits = [(0, j) for j in range(len(child1))] + [(1, j) for j in range(len(child2))]
+        
+#         # Pilih bits_to_mutate bit secara acak untuk dimutasi
+#         mutation_indices = random.sample(all_bits, bits_to_mutate)
+        
+#         # Lakukan mutasi pada bit yang terpilih
+#         for chromosome_idx, bit_idx in mutation_indices:
+#             if chromosome_idx == 0:
+#                 child1[bit_idx] = 1 - child1[bit_idx]  # Mutasi bit pada child1
+#             else:
+#                 child2[bit_idx] = 1 - child2[bit_idx]  # Mutasi bit pada child2
+        
+#         # Simpan kembali hasil mutasi
+#         anak[0] = (tuple(child1), tuple(child2))
+        
+#         # Cetak hasil mutasi
+#         print(f"Anak 1: {child1} dan Anak 2: {child2}")
+    
+#     return anak
+
 def mutasi(anak):
-    pm = 0.1  # probabilitas mutasi
-    bits_to_mutate = round(pm * 20)  # jumlah bit yang akan dimutasi
+    pm = 0.1  # probabilitas mutasi untuk setiap bit
     
     # Iterasi untuk setiap pasangan anak
-    for child1, child2 in anak:
+    for i in range(len(anak)):
+        child1, child2 = anak[i]
         
         # Konversi tuple ke list agar bisa dimodifikasi
         child1 = list(child1)
         child2 = list(child2)
         
-        # Gabungkan kedua kromosom untuk kemudahan memilih bit secara acak
-        all_bits = [(0, j) for j in range(len(child1))] + [(1, j) for j in range(len(child2))]
+        # Lakukan mutasi untuk setiap bit pada child1
+        for j in range(len(child1)):
+            if random.random() < pm:  # Jika nilai random < pm, lakukan mutasi
+                child1[j] = 1 - child1[j]  # Mutasi bit pada child1
         
-        # Pilih bits_to_mutate bit secara acak untuk dimutasi
-        mutation_indices = random.sample(all_bits, bits_to_mutate)
-        
-        # Lakukan mutasi pada bit yang terpilih
-        for chromosome_idx, bit_idx in mutation_indices:
-            if chromosome_idx == 0:
-                child1[bit_idx] = 1 - child1[bit_idx]  # Mutasi bit pada child1
-            else:
-                child2[bit_idx] = 1 - child2[bit_idx]  # Mutasi bit pada child2
+        # Lakukan mutasi untuk setiap bit pada child2
+        for j in range(len(child2)):
+            if random.random() < pm:  # Jika nilai random < pm, lakukan mutasi
+                child2[j] = 1 - child2[j]  # Mutasi bit pada child2
         
         # Simpan kembali hasil mutasi
-        anak[0] = (tuple(child1), tuple(child2))
+        anak[i] = (tuple(child1), tuple(child2))
         
         # Cetak hasil mutasi
         print(f"Anak 1: {child1} dan Anak 2: {child2}")

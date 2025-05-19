@@ -63,19 +63,6 @@ def crossover(parent):
         print(f"child 1:{child1} dan child 2: {child2}")
         child.append((child1, child2))
     return child
-
-def uniform_crossover(parent1, parent2):
-    """Melakukan uniform crossover antara dua parent biner."""
-    child = []
-    for i in range(len(parent1)):
-        if random.random() < 0.6:
-            child1 = parent1[i]
-            child2 = parent2[i]
-        else:
-            child1 = parent2[i]
-            child2 = parent1[i]
-        child.append((child1, child2))
-    return child
     
 # def mutasi(anak):
 #     pm = 0.1  # probabilitas mutasi
